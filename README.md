@@ -90,31 +90,33 @@ $env:DATABASE_URL="mysql+pymysql://root:password@localhost/smart_expense"
 
 Then start the app again. SQLAlchemy will create the required tables automatically.
 
-## CI/CD and Deployment
+### CI/CD and Deployment
 
 ### GitHub Actions Workflow
 
-The project includes automated testing and deployment via GitHub Actions:
+The project includes automated testing via GitHub Actions:
 
 - **Tests**: Runs on every push and pull request to `main` or `master` using Python 3.10 and 3.11
-- **Deployment**: Deploys to AWS Elastic Beanstalk on successful tests when pushing to `main`
+- **Deployment**: AWS Elastic Beanstalk deployment (optional - requires AWS credentials)
 
-### Deploy to AWS Elastic Beanstalk
+### Optional: Deploy to AWS Elastic Beanstalk
 
-Prerequisites:
+If you want to enable automatic deployment to AWS:
+
 1. Create an AWS account and set up Elastic Beanstalk application
 2. Generate AWS IAM credentials with Elastic Beanstalk permissions
 
-Setup steps:
-1. Add AWS credentials to GitHub Secrets:
+3. Add AWS credentials to GitHub Secrets:
    - Go to your repository → **Settings > Secrets and variables > Actions**
    - Add `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
 
-2. Configure the deployment by updating `.github/workflows/ci.yml`:
+4. Configure the deployment by updating `.github/workflows/ci.yml`:
    - Set `aws-region` to your preferred region
    - Update `EB_ENV_NAME` and `EB_APP_NAME` to match your EB application
 
-3. Push to `main` branch and GitHub Actions will automatically deploy
+5. Push to `main` branch and GitHub Actions will automatically deploy
+
+**Note**: If AWS credentials are not configured, the deployment step will be skipped and only tests will run.
 
 ## API Endpoints
 
