@@ -1,298 +1,183 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="page-shell">
+    <section class="hero-panel">
+        <article class="hero-copy">
+            <p class="eyebrow">Financial Recommendation System</p>
+            <h1>Smart Expense Prediction System</h1>
+            <p class="hero-text">
+                Predict monthly spending, optimize budget allocation, and generate practical savings advice using a Flask backend, a Random Forest Regressor, and a dashboard-ready interface.
+            </p>
+            <div class="hero-tags">
+                <span>Flask</span>
+                <span>Machine Learning</span>
+                <span>SQLite / MySQL Ready</span>
+                <span>CSV Export</span>
+            </div>
+        </article>
+        <article class="stat-card accent">
+            <span>Dashboard Status</span>
+            <strong>Healthy</strong>
+            <p style="margin-top: 16px; color: rgba(255,255,255,0.88);">
+                The model is ready to analyze your budget and recommend a balanced allocation for savings, investment, and emergency coverage.
+            </p>
+        </article>
+    </section>
 
-<main class="page-shell">
+    <section class="workspace-grid">
+        <article class="glass-card">
+            <p class="eyebrow">Input Module</p>
+            <h2>Enter income and fixed expenses</h2>
+            <form class="budget-form" method="POST">
+                <label>
+                    Monthly Income (₹)
+                    <input type="number" name="monthly_income" step="0.01" required>
+                </label>
+                <label>
+                    EMI (₹)
+                    <input type="number" name="emi" step="0.01" required>
+                </label>
+                <label>
+                    Rent (₹)
+                    <input type="number" name="rent" step="0.01" required>
+                </label>
+                <label>
+                    Bills (₹)
+                    <input type="number" name="bills" step="0.01" required>
+                </label>
+                <label>
+                    Lifestyle
+                    <select name="lifestyle">
+                        <option value="working">Working</option>
+                        <option value="family">Family</option>
+                        <option value="student">Student</option>
+                    </select>
+                </label>
+                <label>
+                    Spending Habit
+                    <select name="spending_habit">
+                        <option value="balanced">Balanced</option>
+                        <option value="frugal">Frugal</option>
+                        <option value="premium">Premium</option>
+                    </select>
+                </label>
+                <button type="submit">Generate Smart Budget</button>
+            </form>
+            <div class="module-note">
+                <h3>Note</h3>
+                <p>Fill in your monthly income and fixed costs to get a prediction for your spending, savings, and investment plan.</p>
+            </div>
+            {% if result and result.error %}
+            <p class="form-error">{{ result.error }}</p>
+            {% endif %}
+        </article>
 
-```
-<!-- 🔴 DEPLOYMENT CHECK -->
-<h2 style="color:red; text-align:center; margin-bottom:20px;">
-    DEPLOYED SUCCESSFULLY ✅
-</h2>
+        <article class="glass-card">
+            <p class="eyebrow">Recommendation Module</p>
+            <h2>Latest smart budget snapshot</h2>
+            <div class="summary-metrics">
+                <article>
+                    <span>Monthly Income</span>
+                    <strong>₹{{ result.monthly_income if result else '0' }}</strong>
+                </article>
+                <article>
+                    <span>Total Expenses</span>
+                    <strong>₹{{ result.plan.total_expenses if result else '0' }}</strong>
+                </article>
+                <article>
+                    <span>Remaining</span>
+                    <strong>₹{{ result.plan.remaining if result else '0' }}</strong>
+                </article>
+                <article>
+                    <span>Risk Level</span>
+                    <strong>{{ result.plan.risk_level if result else 'Healthy' }}</strong>
+                </article>
+                <article>
+                    <span>Savings</span>
+                    <strong>₹{{ result.plan.recommended_savings if result else '0' }}</strong>
+                </article>
+                <article>
+                    <span>Investment</span>
+                    <strong>₹{{ result.plan.recommended_investment if result else '0' }}</strong>
+                </article>
+                <article>
+                    <span>Emergency Fund</span>
+                    <strong>₹{{ result.plan.emergency_fund if result else '0' }}</strong>
+                </article>
+            </div>
+            <div class="alerts-panel">
+                <h3>Advisor Alerts</h3>
+                <ul>
+                    {% if result and result.plan.alerts %}
+                        {% for alert in result.plan.alerts %}
+                            <li>{{ alert }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <li>Submit a budget to generate personalized recommendations.</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </article>
+    </section>
 
-<!-- HERO SECTION -->
-<section class="hero-panel">
+    <section class="workspace-grid">
+        <article class="glass-card chart-card">
+            <p class="eyebrow">Expense Prediction Module</p>
+            <h2>Predicted expense distribution</h2>
+            <div class="donut-wrapper">
+                <div class="donut-chart"></div>
+                <div class="legend-list">
+                    <div class="legend-item"><span class="legend-key"><span class="legend-swatch" style="background:#d1583d"></span>Bills</span><strong>₹{{ result.bills if result else '0' }}</strong></div>
+                    <div class="legend-item"><span class="legend-key"><span class="legend-swatch" style="background:#e7a96e"></span>EMI</span><strong>₹{{ result.emi if result else '0' }}</strong></div>
+                    <div class="legend-item"><span class="legend-key"><span class="legend-swatch" style="background:#25695f"></span>Entertainment</span><strong>₹{{ result.prediction.entertainment if result else '0' }}</strong></div>
+                    <div class="legend-item"><span class="legend-key"><span class="legend-swatch" style="background:#1d2433"></span>Food</span><strong>₹{{ result.prediction.food if result else '0' }}</strong></div>
+                    <div class="legend-item"><span class="legend-key"><span class="legend-swatch" style="background:#8f3523"></span>Rent</span><strong>₹{{ result.rent if result else '0' }}</strong></div>
+                    <div class="legend-item"><span class="legend-key"><span class="legend-swatch" style="background:#62a897"></span>Transport</span><strong>₹{{ result.prediction.transport if result else '0' }}</strong></div>
+                </div>
+            </div>
+        </article>
 
-    <div class="hero-copy">
-        <p class="eyebrow">FINAL-YEAR PROJECT</p>
+        <article class="glass-card chart-card">
+            <p class="eyebrow">Report Module</p>
+            <h2>Income vs expense history</h2>
+            <div class="bar-chart">
+                <div class="bar-row">
+                    <div class="bar-header"><span>May 04</span><strong>₹{{ result.plan.remaining if result else '0' }} left</strong></div>
+                    <div class="bar-track" style="--income-width: 64%; --expense-width: 36%;">
+                        <div class="bar-income"></div>
+                        <div class="bar-expense"></div>
+                    </div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-header"><span>May 04</span><strong>₹{{ result.plan.remaining if result else '0' }} left</strong></div>
+                    <div class="bar-track" style="--income-width: 58%; --expense-width: 42%;">
+                        <div class="bar-income"></div>
+                        <div class="bar-expense"></div>
+                    </div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-header"><span>May 04</span><strong>₹{{ result.plan.remaining if result else '0' }} left</strong></div>
+                    <div class="bar-track" style="--income-width: 67%; --expense-width: 33%;">
+                        <div class="bar-income"></div>
+                        <div class="bar-expense"></div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
 
-        <h1>
-            Smart Expense Prediction & Recommendation System
-        </h1>
-
-        <p class="hero-text">
-            Predict monthly spending, optimize budget allocation, and generate
-            practical savings advice using a Flask backend, Random Forest model,
-            and interactive dashboard.
-        </p>
-
-        <div class="hero-tags">
-            <span>Flask</span>
-            <span>Machine Learning</span>
-            <span>SQLite / MySQL Ready</span>
-            <span>CSV Export</span>
+    <section class="glass-card advice-grid">
+        <div>
+            <p class="eyebrow">Machine Learning Insights</p>
+            <h2>Model explanation and top drivers</h2>
+            <p>The prediction pipeline is powered by a multi-output Random Forest. It learns from recorded budgets and synthetic benchmark data to estimate expenses by category.</p>
         </div>
-    </div>
-
-    <div class="hero-stat">
-        <h3>Dashboard Status</h3>
-        <p>Healthy</p>
-    </div>
-
-</section>
-
-<!-- INPUT MODULE -->
-<section class="glass-card">
-
-    <h2>Enter income and fixed expenses</h2>
-
-    <form method="POST" action="/">
-
-        <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px;">
-
-            <input type="number" name="income" placeholder="Monthly Income (₹)" required>
-            <input type="number" name="emi" placeholder="EMI (₹)" required>
-
-            <input type="number" name="rent" placeholder="Rent (₹)" required>
-            <input type="number" name="bills" placeholder="Bills (₹)" required>
-
-            <select name="lifestyle">
-                <option value="Working">Working</option>
-                <option value="Student">Student</option>
-            </select>
-
-            <select name="spending">
-                <option value="Balanced">Balanced</option>
-                <option value="Low">Low</option>
-                <option value="High">High</option>
-            </select>
-
-        </div>
-
-        <br>
-
-        <button type="submit">Generate Smart Budget</button>
-
-    </form>
-
-</section>
-
-<!-- RESULT MODULE -->
-{% if result %}
-<section class="glass-card">
-
-    <h2>Latest Smart Budget Snapshot</h2>
-
-    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:12px;">
-
-        <p><b>Monthly Income:</b> ₹{{ result.income }}</p>
-        <p><b>Total Expenses:</b> ₹{{ result.expenses }}</p>
-
-        <p><b>Remaining:</b> ₹{{ result.remaining }}</p>
-        <p><b>Savings:</b> ₹{{ result.savings }}</p>
-
-        <p><b>Investment:</b> ₹{{ result.investment }}</p>
-        <p><b>Emergency Fund:</b> ₹{{ result.emergency }}</p>
-
-        <p><b>Risk Level:</b> {{ result.risk }}</p>
-
-    </div>
-
-</section>
-
-<!-- EXPENSE DISTRIBUTION -->
-<section class="glass-card">
-
-    <h2>Predicted expense distribution</h2>
-
-    <ul>
-        <li>Bills: ₹{{ result.bills }}</li>
-        <li>EMI: ₹{{ result.emi }}</li>
-        <li>Food: ₹{{ result.food }}</li>
-        <li>Rent: ₹{{ result.rent }}</li>
-        <li>Transport: ₹{{ result.transport }}</li>
-        <li>Entertainment: ₹{{ result.entertainment }}</li>
-        <li>Miscellaneous: ₹{{ result.misc }}</li>
-    </ul>
-
-</section>
-{% endif %}
-
-<!-- REPORT SECTION -->
-{% if result %}
-<section class="glass-card">
-
-    <h2>Income vs expense summary</h2>
-
-    <p>Income: ₹{{ result.income }}</p>
-    <p>Expenses: ₹{{ result.expenses }}</p>
-    <p>Remaining: ₹{{ result.remaining }}</p>
-
-</section>
-{% endif %}
-
-<!-- ML EXPLANATION -->
-<section class="glass-card">
-
-    <h2>Model explanation and insights</h2>
-
-    <p>
-        The prediction pipeline uses a Random Forest Regressor trained on financial
-        patterns to estimate category-wise expenses and recommend smart budget allocation.
-    </p>
-
-</section>
-```
-
-</main>
-
-{% endblock %}
-{% extends "base.html" %}
-
-{% block content %}
-
-<main class="page-shell">
-
-```
-<!-- 🔴 DEPLOYMENT CHECK -->
-<h2 style="color:red; text-align:center; margin-bottom:20px;">
-    DEPLOYED SUCCESSFULLY ✅
-</h2>
-
-<!-- HERO SECTION -->
-<section class="hero-panel">
-
-    <div class="hero-copy">
-        <p class="eyebrow">FINAL-YEAR PROJECT</p>
-
-        <h1>
-            Smart Expense Prediction & Recommendation System
-        </h1>
-
-        <p class="hero-text">
-            Predict monthly spending, optimize budget allocation, and generate
-            practical savings advice using a Flask backend, Random Forest model,
-            and interactive dashboard.
-        </p>
-
-        <div class="hero-tags">
-            <span>Flask</span>
-            <span>Machine Learning</span>
-            <span>SQLite / MySQL Ready</span>
-            <span>CSV Export</span>
-        </div>
-    </div>
-
-    <div class="hero-stat">
-        <h3>Dashboard Status</h3>
-        <p>Healthy</p>
-    </div>
-
-</section>
-
-<!-- INPUT MODULE -->
-<section class="glass-card">
-
-    <h2>Enter income and fixed expenses</h2>
-
-    <form method="POST" action="/">
-
-        <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px;">
-
-            <input type="number" name="income" placeholder="Monthly Income (₹)" required>
-            <input type="number" name="emi" placeholder="EMI (₹)" required>
-
-            <input type="number" name="rent" placeholder="Rent (₹)" required>
-            <input type="number" name="bills" placeholder="Bills (₹)" required>
-
-            <select name="lifestyle">
-                <option value="Working">Working</option>
-                <option value="Student">Student</option>
-            </select>
-
-            <select name="spending">
-                <option value="Balanced">Balanced</option>
-                <option value="Low">Low</option>
-                <option value="High">High</option>
-            </select>
-
-        </div>
-
-        <br>
-
-        <button type="submit">Generate Smart Budget</button>
-
-    </form>
-
-</section>
-
-<!-- RESULT MODULE -->
-{% if result %}
-<section class="glass-card">
-
-    <h2>Latest Smart Budget Snapshot</h2>
-
-    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:12px;">
-
-        <p><b>Monthly Income:</b> ₹{{ result.income }}</p>
-        <p><b>Total Expenses:</b> ₹{{ result.expenses }}</p>
-
-        <p><b>Remaining:</b> ₹{{ result.remaining }}</p>
-        <p><b>Savings:</b> ₹{{ result.savings }}</p>
-
-        <p><b>Investment:</b> ₹{{ result.investment }}</p>
-        <p><b>Emergency Fund:</b> ₹{{ result.emergency }}</p>
-
-        <p><b>Risk Level:</b> {{ result.risk }}</p>
-
-    </div>
-
-</section>
-
-<!-- EXPENSE DISTRIBUTION -->
-<section class="glass-card">
-
-    <h2>Predicted expense distribution</h2>
-
-    <ul>
-        <li>Bills: ₹{{ result.bills }}</li>
-        <li>EMI: ₹{{ result.emi }}</li>
-        <li>Food: ₹{{ result.food }}</li>
-        <li>Rent: ₹{{ result.rent }}</li>
-        <li>Transport: ₹{{ result.transport }}</li>
-        <li>Entertainment: ₹{{ result.entertainment }}</li>
-        <li>Miscellaneous: ₹{{ result.misc }}</li>
-    </ul>
-
-</section>
-{% endif %}
-
-<!-- REPORT SECTION -->
-{% if result %}
-<section class="glass-card">
-
-    <h2>Income vs expense summary</h2>
-
-    <p>Income: ₹{{ result.income }}</p>
-    <p>Expenses: ₹{{ result.expenses }}</p>
-    <p>Remaining: ₹{{ result.remaining }}</p>
-
-</section>
-{% endif %}
-
-<!-- ML EXPLANATION -->
-<section class="glass-card">
-
-    <h2>Model explanation and insights</h2>
-
-    <p>
-        The prediction pipeline uses a Random Forest Regressor trained on financial
-        patterns to estimate category-wise expenses and recommend smart budget allocation.
-    </p>
-
-</section>
-```
-
-</main>
-
+        <article class="advice-box">
+            <span>Model</span>
+            <strong>Random Forest Regressor</strong>
+            <p>Top Drivers: monthly_income, spending_habit, lifestyle</p>
+        </article>
+    </section>
+</div>
 {% endblock %}

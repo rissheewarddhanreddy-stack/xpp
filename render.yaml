@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: smart-expense
+    env: python
+    branch: main
+    region: oregon
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: FLASK_ENV
+        value: production

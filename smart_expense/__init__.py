@@ -1,16 +1,22 @@
 from flask import Flask
-from .routes import main_bp
+from flask_sqlalchemy import SQLAlchemy
 
-def create_app():
+db = SQLAlchemy()
+
+def create_app(test_config=None):
     app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///smart_expense.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    try:
-        app.register_blueprint(main_bp)
-    except Exception as e:
-        print("Blueprint error:", e)
+    if test_config is not None:
+        app.config.update(test_config)
 
-    @app.route("/health")
-    def health():
-        return "OK"
+    db.init_app(app)
+
+    from .routes import main_bp
+    app.register_blueprint(main_bp)
+
+    with app.app_context():
+        db.create_all()
 
     return app

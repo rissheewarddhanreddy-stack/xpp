@@ -78,6 +78,20 @@ python -m venv .venv
 http://127.0.0.1:5000
 ```
 
+## Run locally
+
+If you already have the virtual environment set up, start the app with:
+
+```powershell
+.venv\Scripts\python.exe app.py
+```
+
+Then visit:
+
+```text
+http://127.0.0.1:5000
+```
+
 > Tip: VS Code is configured to use the local `.venv` interpreter via `.vscode/settings.json`.
 
 ## Optional MySQL Configuration
@@ -89,6 +103,37 @@ $env:DATABASE_URL="mysql+pymysql://root:password@localhost/smart_expense"
 ```
 
 Then start the app again. SQLAlchemy will create the required tables automatically.
+
+## Deployment
+
+This repo is ready for online hosting with services like Render, Railway, or Heroku.
+
+1. Push your repository to GitHub.
+2. Connect the repo to Render or Railway.
+3. Use the start command below if required:
+
+```powershell
+web: gunicorn app:app
+```
+
+Render and Heroku automatically use the `Procfile`.
+
+### GitHub Actions auto-deploy
+
+This repo now includes a GitHub Actions workflow that deploys to Render on every push to `main`.
+
+You must add these GitHub secrets to your repository:
+
+- `RENDER_API_KEY`
+- `RENDER_SERVICE_ID`
+
+Once configured, pushes to `main` will trigger automatic deployment.
+
+If you prefer to run locally for testing, use:
+
+```powershell
+.venv\Scripts\python.exe app.py
+```
 
 ### CI/CD and Deployment
 
