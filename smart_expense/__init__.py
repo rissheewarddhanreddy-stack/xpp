@@ -4,6 +4,13 @@ from .routes import main_bp
 def create_app():
     app = Flask(__name__)
 
-    app.register_blueprint(main_bp)
+    try:
+        app.register_blueprint(main_bp)
+    except Exception as e:
+        print("Blueprint error:", e)
+
+    @app.route("/health")
+    def health():
+        return "OK"
 
     return app
