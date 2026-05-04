@@ -4,92 +4,98 @@
 
 <main class="page-shell">
 
-  <!-- HERO SECTION -->
-  <section class="hero-panel">
-    <div class="hero-copy">
-      <p class="eyebrow">Final-Year Project</p>
+    <!-- 🔴 DEPLOYMENT CHECK LINE -->
+    <h2 style="color:red; text-align:center;">DEPLOYED SUCCESSFULLY ✅</h2>
 
-      <h1>Smart Expense Prediction & Recommendation System</h1>
+    <!-- HERO SECTION -->
+    <section class="hero-panel">
+        <div class="hero-copy">
+            <p class="eyebrow">Final-Year Project</p>
+            <h1>Smart Expense Prediction & Financial Recommendation System</h1>
+            <p class="hero-text">
+                Predict monthly spending, optimize budget allocation, and generate
+                smart financial advice using a Flask backend and Machine Learning.
+            </p>
 
-      <p class="hero-text">
-        Predict monthly spending, optimize budget allocation, and generate
-        practical savings advice using a Flask backend, Random Forest model,
-        and interactive dashboard.
-      </p>
+            <div class="hero-tags">
+                <span>Flask</span>
+                <span>Machine Learning</span>
+                <span>SQLite / MySQL Ready</span>
+                <span>CSV Export</span>
+            </div>
+        </div>
+    </section>
 
-      <div class="hero-tags">
-        <span>Flask</span>
-        <span>Machine Learning</span>
-        <span>SQLite / MySQL Ready</span>
-        <span>CSV Export</span>
-      </div>
-    </div>
+    <!-- INPUT MODULE -->
+    <section class="glass-card">
+        <h2>Enter Income and Fixed Expenses</h2>
 
-    <div class="hero-stat">
-      <h3>Dashboard Status</h3>
-      <p>Healthy</p>
-    </div>
-  </section>
+        <form method="POST" action="/">
+            <div class="form-grid">
 
-  <!-- INPUT SECTION -->
-  <section class="glass-card project-card">
+                <input type="number" name="income" placeholder="Monthly Income (₹)" required>
+                <input type="number" name="emi" placeholder="EMI (₹)" required>
 
-    <h2>Enter income and fixed expenses</h2>
+                <input type="number" name="rent" placeholder="Rent (₹)" required>
+                <input type="number" name="bills" placeholder="Bills (₹)" required>
 
-    <form method="POST">
+                <select name="lifestyle">
+                    <option value="student">Student</option>
+                    <option value="working">Working</option>
+                </select>
 
-      <div class="form-grid">
-        <input type="number" name="income" placeholder="Monthly Income (₹)" required>
-        <input type="number" name="emi" placeholder="EMI (₹)">
-        <input type="number" name="rent" placeholder="Rent (₹)">
-        <input type="number" name="bills" placeholder="Bills (₹)">
-      </div>
+                <select name="spending">
+                    <option value="low">Low</option>
+                    <option value="balanced">Balanced</option>
+                    <option value="high">High</option>
+                </select>
 
-      <div class="form-grid">
-        <select name="lifestyle">
-          <option value="working">Working</option>
-          <option value="student">Student</option>
-        </select>
+            </div>
 
-        <select name="spending">
-          <option value="balanced">Balanced</option>
-          <option value="high">High</option>
-          <option value="low">Low</option>
-        </select>
-      </div>
+            <button type="submit">Generate Smart Budget</button>
+        </form>
+    </section>
 
-      <button type="submit" class="btn-primary">
-        Generate Smart Budget
-      </button>
+    <!-- RESULT SECTION -->
+    {% if result %}
+    <section class="glass-card">
+        <h2>Latest Smart Budget Snapshot</h2>
 
-    </form>
+        <div class="result-grid">
+            <p><strong>Monthly Income:</strong> ₹{{ result.income }}</p>
+            <p><strong>Total Expenses:</strong> ₹{{ result.expenses }}</p>
+            <p><strong>Remaining:</strong> ₹{{ result.remaining }}</p>
+            <p><strong>Savings:</strong> ₹{{ result.savings }}</p>
+            <p><strong>Investment:</strong> ₹{{ result.investment }}</p>
+            <p><strong>Emergency Fund:</strong> ₹{{ result.emergency }}</p>
+            <p><strong>Risk Level:</strong> {{ result.risk }}</p>
+        </div>
+    </section>
+    {% endif %}
 
-  </section>
+    <!-- EXPENSE DISTRIBUTION -->
+    {% if result %}
+    <section class="glass-card">
+        <h2>Predicted Expense Distribution</h2>
 
-  <!-- RESULT SECTION -->
-  {% if result %}
-  <section class="glass-card">
+        <ul>
+            <li>Bills: ₹{{ result.bills }}</li>
+            <li>Food: ₹{{ result.food }}</li>
+            <li>Rent: ₹{{ result.rent }}</li>
+            <li>Transport: ₹{{ result.transport }}</li>
+            <li>Entertainment: ₹{{ result.entertainment }}</li>
+        </ul>
+    </section>
+    {% endif %}
 
-    <h2>Latest smart budget snapshot</h2>
-
-    <div class="result-grid">
-
-      <div>Monthly Income: ₹{{ result.income }}</div>
-      <div>Total Expenses: ₹{{ result.expenses }}</div>
-      <div>Remaining: ₹{{ result.remaining }}</div>
-      <div>Savings: ₹{{ result.savings }}</div>
-      <div>Investment: ₹{{ result.investment }}</div>
-      <div>Emergency Fund: ₹{{ result.emergency }}</div>
-
-    </div>
-
-    <h3>Risk Level: {{ result.risk }}</h3>
-
-  </section>
-  {% endif %}
-
-  <!-- TEST LINE (FOR CHECKING DEPLOYMENT) -->
-  <h2 style="color:red; text-align:center;">Test Update Working ✅</h2>
+    <!-- ML EXPLANATION -->
+    <section class="glass-card">
+        <h2>Model Explanation</h2>
+        <p>
+            This system uses a Random Forest Regressor trained on financial patterns
+            to predict spending behavior and provide smart budgeting insights.
+        </p>
+    </section>
 
 </main>
 
